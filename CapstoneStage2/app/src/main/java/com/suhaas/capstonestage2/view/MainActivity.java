@@ -1,9 +1,9 @@
-package com.suhaas.capstonestage2.activities;
+package com.suhaas.capstonestage2.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -15,13 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.suhaas.capstonestage2.DetailActivity;
 import com.suhaas.capstonestage2.R;
 import com.suhaas.capstonestage2.adapters.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +33,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(MainActivity.this, DetailActivity.class);
+                startActivity(i);
             }
         });
 
@@ -93,17 +92,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_news) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_bookmark) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_comment) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_settings) {
 
         }
 
