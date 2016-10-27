@@ -55,26 +55,26 @@ public class SnackBarView extends LinearLayout {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         layoutInflater.inflate(R.layout.merge_snackbar, this, true);
 
-//        croutonContainer = Views.findById(this, R.id.crouton_container);
-//        croutonContainer.setBackgroundColor(DEFAULT_BG_COLOR);
-//
-//        croutonText = (TextView) findViewById(R.id.crouton_text);
-//        croutonText.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                hideCrouton(true);
-//            }
-//        });
-//
-//        croutonUndo = (TextView) findViewById(R.id.crouton_undo);
-//        croutonUndo.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (onUndoClickListener != null) {
-//                    onUndoClickListener.onClick(SnackBarView.this);
-//                }
-//            }
-//        });
+        croutonContainer = Views.findById(this, R.id.crouton_container);
+        croutonContainer.setBackgroundColor(DEFAULT_BG_COLOR);
+
+        croutonText = (TextView) findViewById(R.id.crouton_text);
+        croutonText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideCrouton(true);
+            }
+        });
+
+        croutonUndo = (TextView) findViewById(R.id.crouton_undo);
+        croutonUndo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onUndoClickListener != null) {
+                    onUndoClickListener.onClick(SnackBarView.this);
+                }
+            }
+        });
 
     }
 

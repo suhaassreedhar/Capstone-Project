@@ -20,6 +20,7 @@ import com.novoda.simplechromecustomtabs.navigation.NavigationFallback;
 import com.novoda.simplechromecustomtabs.navigation.SimpleChromeCustomTabsIntentBuilder;
 import com.suhaas.capstonestage2.bookmarks.BookmarksActivity;
 import com.suhaas.capstonestage2.comments.CommentsActivity;
+import com.suhaas.capstonestage2.comments.CommentsPresenter;
 import com.suhaas.capstonestage2.login.LoginActivity;
 import com.suhaas.capstonestage2.main.MainActivity;
 import com.suhaas.capstonestage2.model.Story;
@@ -124,20 +125,20 @@ public class Navigator {
                 .navigateTo(Uri.parse(story.getUrl()), activity);
     }
 
-//    public void toComments(View v, Story story) {
-//        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                activity, new Pair<>(v, CommentsPresenter.VIEW_NAME_HEADER_TITLE)
-//        );
-//
-//        Intent commentIntent = new Intent(activity, CommentsActivity.class);
-//        commentIntent.putExtra(CommentsActivity.ARG_STORY, story);
-//
-//        ActivityCompat.startActivity(activity, commentIntent, activityOptions.toBundle());
-//    }
+    public void toComments(View v, Story story) {
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                activity, new Pair<>(v, CommentsPresenter.VIEW_NAME_HEADER_TITLE)
+        );
+
+        Intent commentIntent = new Intent(activity, CommentsActivity.class);
+        commentIntent.putExtra(CommentsActivity.ARG_STORY, story);
+
+        ActivityCompat.startActivity(activity, commentIntent, activityOptions.toBundle());
+    }
 
     public void toComments(Story story) {
         Intent commentIntent = new Intent(activity, CommentsActivity.class);
-//        commentIntent.putExtra(CommentsActivity.ARG_STORY, story);
+        commentIntent.putExtra(CommentsActivity.ARG_STORY, story);
 
         ActivityCompat.startActivity(activity, commentIntent, null);
     }

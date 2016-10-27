@@ -49,7 +49,7 @@ public class JobsHNFragment extends StoryFragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        storiesAdapter.swapCursor(data);
+        storiesAdapter.swapCursor(data);
         stopRefreshing();
     }
 

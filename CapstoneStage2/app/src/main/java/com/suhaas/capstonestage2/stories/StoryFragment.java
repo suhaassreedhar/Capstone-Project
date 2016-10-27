@@ -21,6 +21,7 @@ import com.suhaas.capstonestage2.model.Story;
 import com.suhaas.capstonestage2.model.TimeAgo;
 import com.suhaas.capstonestage2.views.DelegatedSwipeRefreshLayout;
 import com.suhaas.capstonestage2.views.ViewDelegate;
+import com.suhaas.capstonestage2.views.recyclerview.adapter.decorators.FeedRecyclerItemDecoration;
 
 import rx.Observer;
 import rx.Subscription;
@@ -28,7 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class StoryFragment extends HNewsFragment implements SwipeRefreshLayout.OnRefreshListener, ViewDelegate {
 
-//    protected StoriesAdapter storiesAdapter;
+    protected StoriesAdapter storiesAdapter;
     protected Subscription subscription;
 
     private RecyclerView storiesList;
@@ -47,8 +48,8 @@ public abstract class StoryFragment extends HNewsFragment implements SwipeRefres
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_stories_feed, container, false);
 
-//        refreshLayout = Views.findById(rootView, R.id.feed_refresh);
-//        storiesList = Views.findById(rootView, R.id.list_news);
+        refreshLayout = Views.findById(rootView, R.id.feed_refresh);
+        storiesList = Views.findById(rootView, R.id.list_news);
 
         setupRefreshLayout();
         setupStoriesList();
@@ -66,11 +67,11 @@ public abstract class StoryFragment extends HNewsFragment implements SwipeRefres
     private void setupStoriesList() {
         storiesList.setHasFixedSize(true);
         storiesLayoutManager = createLayoutManager(getResources());
-//        storiesList.addItemDecoration(createItemDecoration(getResources()));
+        storiesList.addItemDecoration(createItemDecoration(getResources()));
         storiesList.setLayoutManager(storiesLayoutManager);
 
-//        storiesAdapter = new StoriesAdapter(null, listener, new TimeAgo(getActivity().getResources()));
-//        storiesList.setAdapter(storiesAdapter);
+        storiesAdapter = new StoriesAdapter(null, listener, new TimeAgo(getActivity().getResources()));
+        storiesList.setAdapter(storiesAdapter);
     }
 
     private void maybeUpdateContent() {
@@ -83,11 +84,11 @@ public abstract class StoryFragment extends HNewsFragment implements SwipeRefres
         }
     }
 
-//    private FeedRecyclerItemDecoration createItemDecoration(Resources resources) {
-//        int verticalItemSpacingInPx = resources.getDimensionPixelSize(R.dimen.feed_divider_height);
-//        int horizontalItemSpacingInPx = resources.getDimensionPixelSize(R.dimen.feed_padding_infra_spans);
-//        return new FeedRecyclerItemDecoration(verticalItemSpacingInPx, horizontalItemSpacingInPx);
-//    }
+    private FeedRecyclerItemDecoration createItemDecoration(Resources resources) {
+        int verticalItemSpacingInPx = resources.getDimensionPixelSize(R.dimen.feed_divider_height);
+        int horizontalItemSpacingInPx = resources.getDimensionPixelSize(R.dimen.feed_padding_infra_spans);
+        return new FeedRecyclerItemDecoration(verticalItemSpacingInPx, horizontalItemSpacingInPx);
+    }
 
     private RecyclerView.LayoutManager createLayoutManager(Resources resources) {
         int spans = resources.getInteger(R.integer.feed_columns);

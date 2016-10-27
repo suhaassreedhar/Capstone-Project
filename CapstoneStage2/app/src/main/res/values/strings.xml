@@ -11,7 +11,7 @@
     <string name="title_activity_detail">DetailActivity</string>
 
 
-    <string name="title_launcher">Yahnac</string>
+    <string name="title_launcher">HackerNews</string>
     <string name="title_app">Hacker News</string>
     <string name="title_comments">Comments</string>
     <string name="title_bookmarks">My bookmarks</string>
@@ -25,7 +25,7 @@
 
     <string name="label_comments">Show comments</string>
 
-    <string name="content_authority">com.malmstein.yahnac</string>
+    <string name="content_authority">com.suhaas.capstonestage2</string>
 
     <string name="story_by">by %s</string>
     <string name="story_points">%d points</string>
@@ -41,5 +41,6 @@
     <string name="navigation_drawer_closed_content_description">Close navigation drawer</string>
 
     <string name="coming_soon">Coming soon!</string>
+    <string name="invitation_custom_image">https://github.com/suhaassreedhar/Capstone-Project</string>
 
 </resources>

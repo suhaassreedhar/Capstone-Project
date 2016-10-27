@@ -42,10 +42,10 @@ public class StoryHeaderView extends LinearLayout {
 
         LayoutInflater.from(getContext()).inflate(R.layout.view_story_header, this, true);
 
-//        text = Views.findById(this, R.id.story_title);
-//        author = Views.findById(this, R.id.story_by);
-//        when = Views.findById(this, R.id.story_when);
-//        comments = Views.findById(this, R.id.story_comments);
+        text = Views.findById(this, R.id.story_title);
+        author = Views.findById(this, R.id.story_by);
+        when = Views.findById(this, R.id.story_when);
+        comments = Views.findById(this, R.id.story_comments);
     }
 
     public void updateWith(Story story) {

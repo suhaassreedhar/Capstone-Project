@@ -80,7 +80,7 @@ public class TopStoriesFragment extends StoryFragment implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        storiesAdapter.swapCursor(data);
+        storiesAdapter.swapCursor(data);
         stopRefreshing();
     }
 

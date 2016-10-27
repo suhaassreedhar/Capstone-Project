@@ -35,6 +35,6 @@
     <string name="settings_title_community">Join the Google+ Community</string>
 
     <string name="settings_key_invite">keyInvite</string>
-    <string name="settings_title_invite">Invite your friends to use Yahnac</string>
+    <string name="settings_title_invite">Invite your friends to use HackerNews</string>
 
 </resources>

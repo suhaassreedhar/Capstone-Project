@@ -10,13 +10,45 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
+        Calendar instance = Calendar.getInstance()
+        instance.setTimeInMillis(System.currentTimeMillis())
+
+        buildConfigField "String", "BUILD_TIME_FORMATTED", "\"${instance.getTime()}\""
+        buildConfigField "boolean", "ENABLE_CRASH_ANALYTICS", "!BuildConfig.DEBUG"
+        buildConfigField "boolean", "ENABLE_USAGE_ANALYTICS", "!BuildConfig.DEBUG"
+        buildConfigField "boolean", "ENABLE_APP_INVITES", "!BuildConfig.DEBUG"
     }
     buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled true
+        }
         release {
+            debuggable false
+            jniDebuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildToolsVersion '23.0.3'
 }
 
 dependencies {

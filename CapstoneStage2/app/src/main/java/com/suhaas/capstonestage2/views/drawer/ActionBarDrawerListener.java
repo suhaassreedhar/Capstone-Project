@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.novoda.notils.caster.Classes;
 import com.suhaas.capstonestage2.HNewsNavigationDrawerActivity;
+import com.suhaas.capstonestage2.Navigator;
 import com.suhaas.capstonestage2.R;
 
 public final class ActionBarDrawerListener implements DrawerLayout.DrawerListener, NavigationView.OnNavigationItemSelectedListener {
