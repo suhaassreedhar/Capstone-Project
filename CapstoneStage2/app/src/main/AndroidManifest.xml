@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.suhaas.capstonestage2">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,7 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.suhaas.capstonestage2.HNewsApplication"
+        android:name=".HNewsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/title_launcher"
@@ -25,36 +26,60 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".bookmarks.BookmarksActivity"
+        <activity
+            android:name=".bookmarks.BookmarksActivity"
             android:label="@string/title_bookmarks"
             android:theme="@style/Theme.HNews.News" />
-
-        <activity android:name=".stories.StoryActivity"
+        <activity
+            android:name=".stories.StoryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.HNews.Article"/>
-
-        <activity android:name=".login.LoginActivity"
+            android:theme="@style/Theme.HNews.Article" />
+        <activity
+            android:name=".login.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity android:name=".comments.CommentsActivity" />
-
-        <activity android:name=".settings.SettingsActivity"
+        <activity
+            android:name=".settings.SettingsActivity"
             android:label="@string/title_about"
-            android:theme="@style/Theme.HNews.Settings"/>
+            android:theme="@style/Theme.HNews.Settings" />
 
         <provider
-            android:authorities="com.suhaas.capstonestage2"
             android:name=".data.HNewsProvider"
+            android:authorities="com.suhaas.capstonestage2"
             android:exported="true"
             android:syncable="true" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="AIzaSyBREMsvNsye53U71uBcHc_5FRs0wWr8xGM" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.suhaas.capstonestage2.appwidget.WidgetConfigActivity"
+            android:theme="@style/AppAlertDialog">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.suhaas.capstonestage2.appwidget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver android:name="com.suhaas.capstonestage2.appwidget.WidgetProvider"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.suhaas.capstonestage2.ACTION_REFRESH_WIDGET" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
 
     </application>
 

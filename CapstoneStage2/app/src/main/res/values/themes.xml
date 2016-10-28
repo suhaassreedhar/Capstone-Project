@@ -65,4 +65,14 @@
         <item name="colorAccent">@color/orange</item>
     </style>
 
+    <style name="AppAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/orange400</item>
+        <item name="colorAccent">@color/redA200</item>
+        <item name="android:textColorPrimary">@color/blackT87</item>
+        <item name="android:textColorSecondary">@color/grey500</item>
+        <item name="android:textColorTertiary">?android:textColorPrimary</item>
+        <item name="android:textColorLink">?colorAccent</item>
+    </style>
+
+
 </resources>

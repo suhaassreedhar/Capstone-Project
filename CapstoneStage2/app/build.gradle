@@ -11,6 +11,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        jackOptions {
+            enabled true
+        }
 
         Calendar instance = Calendar.getInstance()
         instance.setTimeInMillis(System.currentTimeMillis())
@@ -48,7 +51,11 @@ android {
         abortOnError false
     }
 
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '24.0.3'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -71,6 +78,9 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.1'
     compile 'com.firebase:firebase-client-android:2.4.1'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.dagger:dagger:1.2.5'
+    compile 'com.android.support:preference-v7:24.2.1'
+
     testCompile 'junit:junit:4.12'
 }
 

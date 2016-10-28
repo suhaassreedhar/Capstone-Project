@@ -12,9 +12,12 @@ import com.novoda.simplechromecustomtabs.SimpleChromeCustomTabs;
 import com.suhaas.capstonestage2.injection.DefaultDependenciesFactory;
 import com.suhaas.capstonestage2.injection.Inject;
 
+import dagger.ObjectGraph;
+
 public class HNewsApplication extends Application {
 
     private static final String LOG_TAG = "HackerNews";
+    private ObjectGraph mApplicationGraph;
 
     private static Context context;
 
@@ -63,5 +66,9 @@ public class HNewsApplication extends Application {
             }
 
         }.execute();
+    }
+
+    public ObjectGraph getApplicationGraph() {
+        return mApplicationGraph;
     }
 }
