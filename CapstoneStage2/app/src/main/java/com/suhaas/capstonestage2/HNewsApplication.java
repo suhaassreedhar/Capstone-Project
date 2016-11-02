@@ -46,6 +46,7 @@ public class HNewsApplication extends Application {
         SimpleChromeCustomTabs.initialize(this);
 
         Inject.using(new DefaultDependenciesFactory(this));
+        mApplicationGraph = ObjectGraph.create();
 
         startup();
     }

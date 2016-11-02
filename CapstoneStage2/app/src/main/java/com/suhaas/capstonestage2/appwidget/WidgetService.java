@@ -1,167 +1,108 @@
 package com.suhaas.capstonestage2.appwidget;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
+import android.support.v4.content.CursorLoader;
+import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.suhaas.capstonestage2.HNewsApplication;
 import com.suhaas.capstonestage2.R;
-
-import java.util.Locale;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.suhaas.capstonestage2.data.HNewsContract;
+import com.suhaas.capstonestage2.data.HNewsProvider;
+import com.suhaas.capstonestage2.model.Story;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class WidgetService extends RemoteViewsService {
-    static final String EXTRA_SECTION = "extra:section";
-    static final String EXTRA_LIGHT_THEME = "extra:lightTheme";
-    static final String EXTRA_CUSTOM_QUERY = "extra:customQuery";
-    @Inject
-    @Named(ActivityModule.HN) ItemManager mItemManager;
-    @Inject @Named(ActivityModule.ALGOLIA) ItemManager mSearchManager;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        ((HNewsApplication) getApplication())
-                .getApplicationGraph()
-                .plus(new ActivityModule(this))
-                .inject(this);
-    }
+    private Story story;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListRemoteViewsFactory(getApplicationContext(),
-                intent.getBooleanExtra(EXTRA_CUSTOM_QUERY, false) ? mSearchManager : mItemManager,
-                intent.getStringExtra(EXTRA_SECTION),
-                intent.getBooleanExtra(EXTRA_LIGHT_THEME, false));
-    }
-
-    static class ListRemoteViewsFactory implements RemoteViewsFactory {
-
-        private static final String SCORE = "%1$dp";
-        private static final String COMMENT = "%1$dc";
-        private static final String SUBTITLE_SEPARATOR = " - ";
-        private static final int MAX_ITEMS = 10;
-        private final Context mContext;
-        private final ItemManager mItemManager;
-//        private final String mFilter;
-        private final boolean mLightTheme;
-//        private final int mHotThreshold;
-        private Item[] mItems;
-
-        ListRemoteViewsFactory(Context context, ItemManager itemManager, String section, boolean lightTheme) {
-            mContext = context;
-            mItemManager = itemManager;
-            mLightTheme = lightTheme;
-//            if (TextUtils.equals(section,
-//                    context.getString(R.string.pref_widget_section_value_best))) {
-//                mFilter = ItemManager.BEST_FETCH_MODE;
-//                mHotThreshold = AppUtils.HOT_THRESHOLD_HIGH;
-//            } else if (TextUtils.equals(section,
-//                    context.getString(R.string.pref_widget_section_value_top))) {
-//                mFilter = ItemManager.TOP_FETCH_MODE;
-//                mHotThreshold = AppUtils.HOT_THRESHOLD_NORMAL;
-//            } else {
-//                mFilter = section;
-//                mHotThreshold = AppUtils.HOT_THRESHOLD_NORMAL;
-//            }
-        }
-
-        @Override
-        public void onCreate() {
-            // no op
-        }
-
-        @Override
-        public void onDataSetChanged() {
-//            mItems = mItemManager.getStories(mFilter, ItemManager.MODE_NETWORK);
-        }
-
-        @Override
-        public void onDestroy() {
-            // no op
-        }
-
-        @Override
-        public int getCount() {
-            return mItems != null ? Math.min(mItems.length, MAX_ITEMS) : 0;
-        }
-
-        @Override
-        public RemoteViews getViewAt(int position) {
-            RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(),
-                    mLightTheme ? R.layout.item_widget_light : R.layout.item_widget);
-            Item item = getItem(position);
-            if (item == null) {
-                return remoteViews;
+        return new RemoteViewsFactory() {
+            private Cursor data = null;
+            @Override
+            public void onCreate() {
+                // Nothing to do
             }
-            if (!isItemAvailable(item)) {
-                Item remoteItem = mItemManager.getItem(item.getId(), ItemManager.MODE_NETWORK);
-                if (remoteItem != null) {
-                    item.populate(remoteItem);
-                } else {
-                    return remoteViews;
+
+            @Override
+            public void onDataSetChanged() {
+                if (data != null) {
+                    data.close();
                 }
+                final long identityToken = Binder.clearCallingIdentity();
+                Uri storyNewsUri = HNewsContract.StoryEntry.buildStoriesUri();
+
+                runOnUiThread(() -> data = (Cursor) new CursorLoader(
+                        getApplication(),
+                        storyNewsUri,
+                        HNewsContract.StoryEntry.STORY_COLUMNS,
+                        HNewsContract.StoryEntry.TYPE + " = ?",
+                        new String[]{Story.TYPE.story.name()},
+                        HNewsContract.StoryEntry.RANK + " ASC" +
+                                ", " + HNewsContract.StoryEntry.TIMESTAMP + " DESC"));
+
+
+                Binder.restoreCallingIdentity(identityToken);
+
             }
-            remoteViews.setTextViewText(R.id.title, item.getDisplayedTitle());
-//            remoteViews.setTextViewText(R.id.score, new SpannableStringBuilder()
-//                    .append(getSpan(item.getScore(), SCORE, mHotThreshold * AppUtils.HOT_FACTOR))
-//                    .append(SUBTITLE_SEPARATOR)
-//                    .append(getSpan(item.getKidCount(), COMMENT, mHotThreshold)));
-//            remoteViews.setOnClickFillInIntent(R.id.item_view, new Intent().setData(
-//                    AppUtils.createItemUri(item.getId())));
-            return remoteViews;
-        }
 
-        @Override
-        public RemoteViews getLoadingView() {
-            return new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 1;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            Item item = getItem(position);
-            return item != null ? item.getLongId() : 0L;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-        private Item getItem(int position) {
-            return mItems != null && position < mItems.length ? mItems[position] : null;
-        }
-
-        private boolean isItemAvailable(Item item) {
-            return item != null && item.getLocalRevision() > 0;
-        }
-
-        private SpannableString getSpan(int value, String format, int hotThreshold) {
-            String text = String.format(Locale.US, format, value);
-            SpannableString spannable = new SpannableString(text);
-            if (value >= hotThreshold) {
-                spannable.setSpan(new ForegroundColorSpan(
-                                ContextCompat.getColor(mContext, R.color.orange500)),
-                        0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            private void runOnUiThread(Runnable runnable) {
             }
-            return spannable;
-        }
+
+            @Override
+            public void onDestroy() {
+
+            }
+
+            @Override
+            public int getCount() {
+            return data == null ? 0 : data.getCount();
+            }
+
+            @Override
+            public RemoteViews getViewAt(int position) {
+                if (position == AdapterView.INVALID_POSITION ||
+                        data == null || !data.moveToPosition(position)) {
+                    return null;
+                }
+                RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_collection_item);
+                views.setTextViewText(R.id.news_title, data.getString(data.getColumnIndex("title")));
+
+                final Intent fillInIntent = new Intent();
+                fillInIntent.putExtra(getResources().getString(Integer.parseInt("title")), data.getString(data.getColumnIndex(HNewsContract.StoryEntry.TITLE)));
+                views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
+
+                return views;
+            }
+
+            @Override
+            public RemoteViews getLoadingView() {
+                return null; // use the default loading view
+            }
+
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                if (data != null && data.moveToPosition(position)) {
+                    final int QUOTES_ID_COL = 0;
+                    return data.getLong(QUOTES_ID_COL);
+                }
+                return position;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+        };
     }
 }

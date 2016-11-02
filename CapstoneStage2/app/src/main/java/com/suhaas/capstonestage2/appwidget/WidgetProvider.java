@@ -1,57 +1,66 @@
 package com.suhaas.capstonestage2.appwidget;
 
 
+import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.text.TextUtils;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
+import android.widget.RemoteViews;
 
-import com.suhaas.capstonestage2.BuildConfig;
 import com.suhaas.capstonestage2.R;
+import com.suhaas.capstonestage2.main.MainActivity;
 
 public class WidgetProvider extends AppWidgetProvider {
-
-    static final String ACTION_REFRESH_WIDGET = BuildConfig.APPLICATION_ID + ".ACTION_REFRESH_WIDGET";
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            Toast.makeText(context, R.string.not_supported, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.equals(intent.getAction(), ACTION_REFRESH_WIDGET)) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            new WidgetHelper(context).refresh(appWidgetId);
-        } else if (TextUtils.equals(intent.getAction(), AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
-            int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            if (appWidgetIds != null) {
-                WidgetHelper widgetHelper = new WidgetHelper(context);
-                for (int appWidgetId : appWidgetIds) {
-                    widgetHelper.configure(appWidgetId);
-                }
-            }
-        } else {
-            super.onReceive(context, intent);
-        }
-    }
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        WidgetHelper widgetHelper = new WidgetHelper(context);
         for (int appWidgetId : appWidgetIds) {
-            widgetHelper.update(appWidgetId);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_collection);
+
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                setRemoteAdapter(context, views);
+            } else {
+                setRemoteAdapterV11(context, views);
+            }
+
+            Intent clickIntentTemplate = new Intent(context, MainActivity.class);
+            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(clickIntentTemplate)
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        WidgetHelper widgetHelper = new WidgetHelper(context);
-        for (int appWidgetId : appWidgetIds) {
-            widgetHelper.remove(appWidgetId);
-        }
+    /**
+     * Sets the remote adapter used to fill in the list items
+     *
+     * @param context the context used to launch the intent
+     * @param views RemoteViews to set the RemoteAdapter
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
+        views.setRemoteAdapter(R.id.widget_list,
+                new Intent(context, WidgetService.class));
+    }
+
+    /**
+     * Sets the remote adapter used to fill in the list items
+     *
+     * @param context the context to launch the intent
+     * @param views RemoteViews to set the RemoteAdapter
+     */
+    @SuppressWarnings("deprecation")
+    private void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
+        views.setRemoteAdapter(0, R.id.widget_list,
+                new Intent(context, WidgetService.class));
     }
 }

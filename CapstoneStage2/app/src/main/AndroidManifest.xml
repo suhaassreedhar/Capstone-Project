@@ -56,19 +56,12 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name="com.suhaas.capstonestage2.appwidget.WidgetConfigActivity"
-            android:theme="@style/AppAlertDialog">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-
         <service
-            android:name="com.suhaas.capstonestage2.appwidget.WidgetService"
+            android:name=".appwidget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name="com.suhaas.capstonestage2.appwidget.WidgetProvider"
+        <receiver
+            android:name=".appwidget.WidgetProvider"
             tools:ignore="ExportedReceiver">
             <intent-filter>
                 <action android:name="com.suhaas.capstonestage2.ACTION_REFRESH_WIDGET" />
@@ -76,10 +69,11 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info" />
         </receiver>
-
 
     </application>
 
