@@ -47,4 +47,5 @@
     <dimen name="toolbar_elevation">6dp</dimen>
 
     <dimen name="progressbar_fix">-8dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

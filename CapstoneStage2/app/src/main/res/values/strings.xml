@@ -52,4 +52,18 @@
     <string name="title_activity_new">Top stories</string>
     <string name="not_supported">Device not supported</string>
 
+    <string name="empty_widget_view_text">No News links available :(</string>
+
+    <string name="test_link_subreddit_name" translatable="false">r/Jokes</string>
+    <string name="test_link_title" translatable="false">Lorem ipsum amet mi tristique turpis dapibus felis eget facilisis aliquam velit nullam.</string>
+    <string name="test_link_num_comments" translatable="false">000</string>
+    <string name="test_link_score" translatable="false">0000</string>
+    <string name="test_link_num_links" translatable="false">00</string>
+    <string name="test_link_list_order_num" translatable="false">00</string>
+
+    <string name="string_title"  translatable="false">title</string>
+    <string name="article_title">This is the article title</string>
+    <string name="top_stories">Top Stories</string>
+
+
 </resources>

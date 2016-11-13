@@ -6,24 +6,21 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.support.v4.content.CursorLoader;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.suhaas.capstonestage2.R;
 import com.suhaas.capstonestage2.data.HNewsContract;
-import com.suhaas.capstonestage2.data.HNewsProvider;
 import com.suhaas.capstonestage2.model.Story;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class WidgetService extends RemoteViewsService {
-    private Story story;
+    Cursor mCursor;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
-            private Cursor data = null;
             @Override
             public void onCreate() {
                 // Nothing to do
@@ -31,52 +28,43 @@ public class WidgetService extends RemoteViewsService {
 
             @Override
             public void onDataSetChanged() {
-                if (data != null) {
-                    data.close();
-                }
-                final long identityToken = Binder.clearCallingIdentity();
-                Uri storyNewsUri = HNewsContract.StoryEntry.buildStoriesUri();
+                if (mCursor != null)
+                    mCursor.close();
+                    final long identityToken = Binder.clearCallingIdentity();
+                    Uri storyNewsUri = HNewsContract.StoryEntry.buildStoriesUri();
+                    mCursor = WidgetService.this.getContentResolver().query(storyNewsUri, HNewsContract.StoryEntry.STORY_COLUMNS
+                            ,HNewsContract.StoryEntry.TYPE + " = ?"
+                            ,new String[]{Story.TYPE.story.name()}
+                            ,HNewsContract.StoryEntry.RANK + " ASC" +
+                                    ", " + HNewsContract.StoryEntry.TIMESTAMP + " DESC");
+                    Binder.restoreCallingIdentity(identityToken);
 
-                runOnUiThread(() -> data = (Cursor) new CursorLoader(
-                        getApplication(),
-                        storyNewsUri,
-                        HNewsContract.StoryEntry.STORY_COLUMNS,
-                        HNewsContract.StoryEntry.TYPE + " = ?",
-                        new String[]{Story.TYPE.story.name()},
-                        HNewsContract.StoryEntry.RANK + " ASC" +
-                                ", " + HNewsContract.StoryEntry.TIMESTAMP + " DESC"));
-
-
-                Binder.restoreCallingIdentity(identityToken);
-
-            }
-
-            private void runOnUiThread(Runnable runnable) {
             }
 
             @Override
             public void onDestroy() {
-
+                if (mCursor != null)
+                    mCursor.close();
             }
 
             @Override
             public int getCount() {
-            return data == null ? 0 : data.getCount();
+            return mCursor == null ? 0 : mCursor.getCount();
             }
 
             @Override
             public RemoteViews getViewAt(int position) {
+                RemoteViews views = new RemoteViews(WidgetService.this.getPackageName(), R.layout.widget_collection_item);
                 if (position == AdapterView.INVALID_POSITION ||
-                        data == null || !data.moveToPosition(position)) {
-                    return null;
+                        mCursor == null || !mCursor.moveToPosition(position)) {
+                    views.setTextViewText(R.id.article_title,
+                            mCursor.getString(mCursor.getColumnIndex(getResources().getString(R.string.string_title))));
+
+                    final Intent fillInIntent = new Intent();
+                    fillInIntent.putExtra(getResources().getString(R.string.string_title),
+                            mCursor.getString(mCursor.getColumnIndex(HNewsContract.StoryEntry.TITLE)));
+                    views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 }
-                RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_collection_item);
-                views.setTextViewText(R.id.news_title, data.getString(data.getColumnIndex("title")));
-
-                final Intent fillInIntent = new Intent();
-                fillInIntent.putExtra(getResources().getString(Integer.parseInt("title")), data.getString(data.getColumnIndex(HNewsContract.StoryEntry.TITLE)));
-                views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
-
                 return views;
             }
 
@@ -92,9 +80,9 @@ public class WidgetService extends RemoteViewsService {
 
             @Override
             public long getItemId(int position) {
-                if (data != null && data.moveToPosition(position)) {
+                if (mCursor != null && mCursor.moveToPosition(position)) {
                     final int QUOTES_ID_COL = 0;
-                    return data.getLong(QUOTES_ID_COL);
+                    return mCursor.getLong(QUOTES_ID_COL);
                 }
                 return position;
             }
