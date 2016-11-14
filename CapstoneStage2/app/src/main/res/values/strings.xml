@@ -64,6 +64,7 @@
     <string name="string_title"  translatable="false">title</string>
     <string name="article_title">This is the article title</string>
     <string name="top_stories">Top Stories</string>
+    <string name="content_description_reply" translatable="false">Reply for comments</string>
 
 
 </resources>

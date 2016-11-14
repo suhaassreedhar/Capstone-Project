@@ -23,6 +23,15 @@ android {
         buildConfigField "boolean", "ENABLE_USAGE_ANALYTICS", "!BuildConfig.DEBUG"
         buildConfigField "boolean", "ENABLE_APP_INVITES", "!BuildConfig.DEBUG"
     }
+    signingConfigs {
+
+        release {
+            storeFile file ('HackerNews.jks')
+            storePassword 'capstonehacker'
+            keyAlias 'HackerNews'
+            keyPassword 'capstonehacker'
+        }
+    }
     buildTypes {
         debug {
             debuggable true

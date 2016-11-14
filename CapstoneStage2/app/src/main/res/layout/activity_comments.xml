@@ -47,6 +47,7 @@
         android:layout_gravity="bottom" />
 
     <android.support.design.widget.FloatingActionButton
+        android:contentDescription="@string/content_description_reply"
         android:id="@+id/story_reply_action"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
